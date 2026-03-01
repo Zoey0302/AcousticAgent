@@ -289,11 +289,12 @@ const calculateResponse = (driver, params, viewMode, circuitType, freqs) => {
 
 // --- 等效電路圖視覺元件 ---
 const CircuitDiagramSVG = ({ type }) => {
+  const base = import.meta.env.BASE_URL;
   const stackImages = {
-    'TYPE_A': '/images/type_a.png',
-    'TYPE_C': '/images/type_c.png',
-    'TYPE_E': '/images/type_e.png',
-    'CUSTOM_CIRCUIT': '/images/type_a.png'
+    'TYPE_A': `${base}images/type_a.png`,
+    'TYPE_C': `${base}images/type_c.png`,
+    'TYPE_E': `${base}images/type_e.png`,
+    'CUSTOM_CIRCUIT': `${base}images/type_a.png`
   };
   const hasIndRear = type === 'TYPE_A' || type === 'TYPE_C' || type === 'CUSTOM_CIRCUIT';
   const hasBackLeak = type === 'TYPE_A' || type === 'TYPE_E' || type === 'CUSTOM_CIRCUIT';
@@ -436,6 +437,7 @@ const AiAssistantView = () => {
 
 // --- 子視圖 2：腔體預測系統 ---
 const CavityPredictionView = ({ drivers }) => {
+  const base = import.meta.env.BASE_URL;
   const [selectedSimId, setSelectedSimId] = useState(drivers.length > 0 ? drivers[0].id : '');
   const [isCustomMode, setIsCustomMode] = useState(false);
   const [circuitType, setCircuitType] = useState('TYPE_A'); 
@@ -837,7 +839,7 @@ const CavityPredictionView = ({ drivers }) => {
                 <SectionHeaderWithInfo 
                   icon={Box} 
                   title="前腔 (Front Cavity)" 
-                  infoImage="/images/info_front_cavity.png" 
+                  infoImage={`${base}images/info_front_cavity.png`} 
                   infoText="定義範圍：包含單體振膜前方至耳道之密閉或半密閉空間。影響前腔洩漏與高頻諧振，量測標準依據 IEC 相關規範進行估算。" 
                 />
                 <div className="grid grid-cols-2 gap-3">
@@ -852,7 +854,7 @@ const CavityPredictionView = ({ drivers }) => {
                   <SectionHeaderWithInfo 
                     icon={Box} 
                     title="獨立背腔 (Rear Cavity 1)" 
-                    infoImage="/images/info_rear_cavity_1.png" 
+                    infoImage={`${base}images/info_rear_cavity_1.png`} 
                     infoText="定義範圍：單體後方第一層密閉或半密閉腔體。主要影響系統中高頻之聲學順性與阻尼過渡特性。" 
                   />
                   <div className="grid grid-cols-2 gap-3">
@@ -867,7 +869,7 @@ const CavityPredictionView = ({ drivers }) => {
                 <SectionHeaderWithInfo 
                   icon={Box} 
                   title={`大背腔 (${circuitType === 'TYPE_E' ? 'Rear Cavity' : 'Rear Cavity 2'})`} 
-                  infoImage="/images/info_rear_cavity_2.png" 
+                  infoImage={`${base}images/info_rear_cavity_2.png`} 
                   infoText="定義範圍：耳機最外層之主要背腔。決定系統主共振頻率 (Sys f0) 與整體低頻下潛之極限能力。" 
                 />
                 <div className="grid grid-cols-2 gap-3">
@@ -906,7 +908,7 @@ const CavityPredictionView = ({ drivers }) => {
                 <SectionHeaderWithInfo 
                   icon={Activity} 
                   title="耳罩參數 (Earpads)" 
-                  infoImage="/images/info_earpads.png" 
+                  infoImage={`${base}images/info_earpads.png`} 
                   infoText="定義範圍：耳罩物理尺寸與材質結構。直接影響前腔整體洩漏率 (Leakage) 與低頻區段之聲學短路效應。" 
                   iconColor="text-emerald-500"
                 />
