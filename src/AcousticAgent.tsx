@@ -404,6 +404,13 @@ const AcousticBlockDiagram = ({ type, hasIndRear, hasBackLeak }) => {
 };
 
 const CircuitDiagramSVG = ({ type }) => {
+  const base = import.meta.env.BASE_URL;
+  const stackImages = {
+    'TYPE_A': `${base}images/type_a.png`,
+    'TYPE_C': `${base}images/type_c.png`,
+    'TYPE_E': `${base}images/type_e.png`,
+    'CUSTOM_CIRCUIT': `${base}images/type_a.png`
+  };
   const hasIndRear = type === 'TYPE_A' || type === 'TYPE_C' || type === 'CUSTOM_CIRCUIT';
   const hasBackLeak = type === 'TYPE_A' || type === 'TYPE_E' || type === 'CUSTOM_CIRCUIT';
 
@@ -413,66 +420,15 @@ const CircuitDiagramSVG = ({ type }) => {
         <Layers size={12} className="mr-2 text-blue-500" />
         ACOUSTIC ARCHITECTURE: <span className="text-slate-700 ml-1">{type.replace('_', ' ')}</span>
       </div>
-      <AcousticBlockDiagram type={type} hasIndRear={hasIndRear} hasBackLeak={hasBackLeak} />
-      <div className="w-full max-w-[600px] h-[320px] relative shrink-0">
-        <svg viewBox="0 0 500 300" className="w-full h-full drop-shadow-sm">
-          <defs><marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4"><circle cx="5" cy="5" r="5" fill="#64748b" /></marker></defs>
-          <line x1="40" y1="260" x2="460" y2="260" stroke="#94a3b8" strokeWidth="3" />
-          <path d="M 250 260 L 250 280 M 230 280 L 270 280 M 240 285 L 260 285 M 245 290 L 255 290" stroke="#94a3b8" strokeWidth="2" fill="none" />
-          <text x="120" y="130" textAnchor="middle" className="text-[10px] font-bold fill-sky-600">Node F (前腔)</text>
-          {hasIndRear ? (
-            <><text x="250" y="130" textAnchor="middle" className="text-[10px] font-bold fill-blue-600">Node R1 (獨立)</text><text x="400" y="130" textAnchor="middle" className="text-[10px] font-bold fill-indigo-600">Node R2 (大背)</text></>
-          ) : (<text x="350" y="130" textAnchor="middle" className="text-[10px] font-bold fill-indigo-600">Node R (大背腔)</text>)}
-          <line x1="120" y1="140" x2={hasIndRear ? "400" : "350"} y2="140" stroke="#cbd5e1" strokeWidth="3" markerStart="url(#dot)" markerEnd="url(#dot)" />
-          {hasIndRear && <circle cx="250" cy="140" r="4" fill="#64748b" />}
-          <line x1="120" y1="140" x2="120" y2="190" stroke="#cbd5e1" strokeWidth="3" />
-          <line x1="105" y1="190" x2="135" y2="190" stroke="#0284c7" strokeWidth="4" />
-          <line x1="105" y1="200" x2="135" y2="200" stroke="#0284c7" strokeWidth="4" />
-          <line x1="120" y1="200" x2="120" y2="260" stroke="#cbd5e1" strokeWidth="3" />
-          <text x="95" y="200" className="text-[10px] font-bold fill-sky-600">C_af</text>
-          <path d="M 150 140 L 150 170 L 140 175 L 160 185 L 140 195 L 160 205 L 150 210 L 150 260" stroke="#10b981" strokeWidth="2" fill="none" />
-          <text x="175" y="200" className="text-[9px] font-bold fill-emerald-600">Leak F</text>
-          {hasIndRear && (
-            <>
-              <line x1="250" y1="140" x2="250" y2="190" stroke="#cbd5e1" strokeWidth="3" />
-              <line x1="235" y1="190" x2="265" y2="190" stroke="#2563eb" strokeWidth="4" />
-              <line x1="235" y1="200" x2="265" y2="200" stroke="#2563eb" strokeWidth="4" />
-              <line x1="250" y1="200" x2="250" y2="260" stroke="#cbd5e1" strokeWidth="3" />
-              <text x="275" y="200" className="text-[10px] font-bold fill-blue-600">C_ab1</text>
-            </>
-          )}
-          <line x1={hasIndRear ? "400" : "350"} y1="140" x2={hasIndRear ? "400" : "350"} y2="190" stroke="#cbd5e1" strokeWidth="3" />
-          <line x1={hasIndRear ? "385" : "335"} y1="190" x2={hasIndRear ? "415" : "365"} y2="190" stroke="#4f46e5" strokeWidth="4" />
-          <line x1={hasIndRear ? "385" : "335"} y1="200" x2={hasIndRear ? "415" : "365"} y2="200" stroke="#4f46e5" strokeWidth="4" />
-          <line x1={hasIndRear ? "400" : "350"} y1="200" x2={hasIndRear ? "400" : "350"} y2="260" stroke="#cbd5e1" strokeWidth="3" />
-          <text x={hasIndRear ? "425" : "375"} y="200" className="text-[10px] font-bold fill-indigo-600">{hasIndRear ? 'C_ab2' : 'C_ab'}</text>
-          {hasBackLeak && (
-            <>
-              <path d={`M ${hasIndRear ? 430 : 380} 140 L ${hasIndRear ? 430 : 380} 170 L ${hasIndRear ? 420 : 370} 175 L ${hasIndRear ? 440 : 390} 185 L ${hasIndRear ? 420 : 370} 195 L ${hasIndRear ? 440 : 390} 205 L ${hasIndRear ? 430 : 380} 210 L ${hasIndRear ? 430 : 380} 260`} stroke="#10b981" strokeWidth="2" fill="none" />
-              <text x={hasIndRear ? 455 : 405} y="200" className="text-[9px] font-bold fill-emerald-600">Leak R</text>
-            </>
-          )}
-          <rect x={hasIndRear ? 155 : 205} y="130" width="60" height="20" rx="2" fill="white" stroke={hasIndRear ? "#3b82f6" : "#6366f1"} strokeWidth="2" strokeDasharray="4 2" />
-          <text x={hasIndRear ? 185 : 235} y="143" textAnchor="middle" className={`text-[9px] font-bold ${hasIndRear ? 'fill-blue-600' : 'fill-indigo-600'}`}>
-            {type === 'TYPE_E' ? 'Port B (Mesh)' : 'Port A (Mesh)'}
-          </text>
-          {hasIndRear && (
-            <>
-              <path d="M 295 140 C 305 120, 315 120, 315 140 C 325 120, 335 120, 335 140 C 345 120, 355 120, 355 140" stroke="#8b5cf6" strokeWidth="2" fill="none" />
-              <rect x="295" y="135" width="60" height="10" rx="2" fill="white" stroke="#6366f1" strokeWidth="2" />
-              <text x="325" y="155" textAnchor="middle" className="text-[9px] font-bold fill-indigo-600">
-                {type === 'TYPE_C' ? 'Port C (Tube)' : type === 'CUSTOM_CIRCUIT' ? 'Custom Port (Tube)' : 'Port B (Tube)'}
-              </text>
-            </>
-          )}
-          <path d={`M 120 140 L 120 60 L ${hasIndRear ? 250 : 350} 60 L ${hasIndRear ? 250 : 350} 140`} stroke="#cbd5e1" strokeWidth="3" fill="none" />
-          <circle cx="150" cy="60" r="15" fill="white" stroke="#e11d48" strokeWidth="3" />
-          <path d="M 140 60 Q 145 50 150 60 T 160 60" stroke="#e11d48" strokeWidth="2" fill="none" />
-          <text x="150" y="40" textAnchor="middle" className="text-[10px] font-bold fill-rose-600">P_gen</text>
-          <rect x={hasIndRear ? 190 : 230} y="50" width="40" height="20" rx="2" fill="white" stroke="#64748b" strokeWidth="2" />
-          <text x={hasIndRear ? 210 : 250} y="63" textAnchor="middle" className="text-[9px] font-bold fill-slate-600">Z_d</text>
-        </svg>
+      <div className="w-full max-w-[600px] h-[340px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-hidden shrink-0 border border-slate-200">
+        <img 
+          src={stackImages[type] || `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Image+Missing)`} 
+          alt={`Mechanical Stack for ${type}`} 
+          className="w-full h-full object-contain p-2" 
+          onError={(e) => { e.target.src = `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Please+insert+PPT+image)`; }}
+        />
       </div>
+      <AcousticBlockDiagram type={type} hasIndRear={hasIndRear} hasBackLeak={hasBackLeak} />
     </div>
   );
 };
