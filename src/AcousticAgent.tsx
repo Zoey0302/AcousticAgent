@@ -293,8 +293,8 @@ const AcousticBlockDiagram = ({ type, hasIndRear, hasBackLeak }) => {
   const r2Cx = r2X + 70;
 
   return (
-    <div className="w-full max-w-[800px] h-[360px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-x-auto shrink-0 border border-slate-200 p-2">
-      <svg viewBox="0 0 900 380" className="w-full h-full drop-shadow-sm font-sans" style={{ minWidth: '700px' }}>
+    <div className="w-full max-w-[880px] h-[396px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-x-auto shrink-0 border border-slate-200 p-2">
+      <svg viewBox="0 0 900 380" className="w-full h-full drop-shadow-sm font-sans" style={{ minWidth: '770px' }}>
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
@@ -420,7 +420,7 @@ const CircuitDiagramSVG = ({ type }) => {
         <Layers size={12} className="mr-2 text-blue-500" />
         ACOUSTIC ARCHITECTURE: <span className="text-slate-700 ml-1">{type.replace('_', ' ')}</span>
       </div>
-      <div className="w-full max-w-[600px] h-[340px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-hidden shrink-0 border border-slate-200">
+      <div className="w-full max-w-[660px] h-[374px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-hidden shrink-0 border border-slate-200">
         <img 
           src={stackImages[type] || `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Image+Missing)`} 
           alt={`Mechanical Stack for ${type}`} 
