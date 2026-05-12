@@ -288,14 +288,122 @@ const calculateResponse = (driver, params, viewMode, circuitType, freqs) => {
 };
 
 // --- 等效電路圖視覺元件 ---
+const AcousticBlockDiagram = ({ type, hasIndRear, hasBackLeak }) => {
+  const r2X = hasIndRear ? 480 : 350;
+  const r2Cx = r2X + 70;
+
+  return (
+    <div className="w-full max-w-[800px] h-[360px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-x-auto shrink-0 border border-slate-200 p-2">
+      <svg viewBox="0 0 900 380" className="w-full h-full drop-shadow-sm font-sans" style={{ minWidth: '700px' }}>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+          </marker>
+          <marker id="arrow-dashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+          </marker>
+        </defs>
+
+        {/* 1. Driver Node */}
+        <rect x="30" y="140" width="120" height="90" rx="12" fill="#fff1f2" stroke="#f43f5e" strokeWidth="2" />
+        <text x="90" y="185" textAnchor="middle" className="text-[16px] font-black fill-rose-600">單體</text>
+        <text x="90" y="205" textAnchor="middle" className="text-xs font-bold fill-rose-500">Driver</text>
+
+        {/* 2. Front Cavity Node */}
+        <rect x="220" y="40" width="140" height="90" rx="12" fill="#f0f9ff" stroke="#0ea5e9" strokeWidth="2" />
+        <text x="290" y="85" textAnchor="middle" className="text-[16px] font-black fill-sky-600">前腔</text>
+        <text x="290" y="105" textAnchor="middle" className="text-xs font-bold fill-sky-500">Front Cavity</text>
+
+        {/* 3. Rear Cavity 1 Node */}
+        {hasIndRear && (
+          <>
+            <rect x="220" y="250" width="140" height="90" rx="12" fill="#eef2ff" stroke="#6366f1" strokeWidth="2" />
+            <text x="290" y="295" textAnchor="middle" className="text-[16px] font-black fill-indigo-600">獨立背腔</text>
+            <text x="290" y="315" textAnchor="middle" className="text-xs font-bold fill-indigo-500">Rear Cavity 1</text>
+          </>
+        )}
+
+        {/* 4. Rear Cavity 2 Node */}
+        <rect x={r2X} y="250" width="140" height="90" rx="12" fill="#eef2ff" stroke="#6366f1" strokeWidth="2" />
+        <text x={r2Cx} y="295" textAnchor="middle" className="text-[16px] font-black fill-indigo-600">{hasIndRear ? '大背腔' : '大背腔'}</text>
+        <text x={r2Cx} y="315" textAnchor="middle" className="text-xs font-bold fill-indigo-500">{hasIndRear ? 'Rear Cavity 2' : 'Rear Cavity'}</text>
+
+        {/* 5. Open Air Node */}
+        <rect x="730" y="140" width="130" height="90" rx="12" fill="#f8fafc" stroke="#94a3b8" strokeWidth="2" strokeDasharray="6 6" />
+        <text x="795" y="185" textAnchor="middle" className="text-[16px] font-black fill-slate-600">外部環境</text>
+        <text x="795" y="205" textAnchor="middle" className="text-xs font-bold fill-slate-500">Open Air</text>
+
+        {/* --- PATHS --- */}
+        
+        {/* Driver to Front / Rear1 or Rear2 */}
+        <line x1="150" y1="185" x2="185" y2="185" stroke="#64748b" strokeWidth="2" />
+        <line x1="185" y1="85" x2="185" y2="295" stroke="#64748b" strokeWidth="2" />
+        <line x1="185" y1="85" x2="218" y2="85" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrow)" />
+        <line x1="185" y1="295" x2={hasIndRear ? "218" : (r2X - 2)} y2="295" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrow)" />
+
+        {/* Front to Rear 1 */}
+        {hasIndRear && (
+          <>
+            <line x1="290" y1="130" x2="290" y2="248" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrow)" />
+            <rect x="235" y="170" width="110" height="40" rx="4" fill="white" stroke="#cbd5e1" />
+            <text x="290" y="185" textAnchor="middle" className="text-xs font-bold fill-slate-600">前通後腔孔</text>
+            <text x="290" y="200" textAnchor="middle" className="text-[10px] font-semibold fill-slate-500">(MESH)</text>
+          </>
+        )}
+
+        {/* Front to Rear 2 (or just back to Rear if no ind rear) */}
+        {hasIndRear && (type === 'TYPE_A' || type === 'CUSTOM_CIRCUIT') && (
+          <>
+            <path d={`M 360 85 L ${r2Cx} 85 L ${r2Cx} 248`} stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+            <rect x={(360 + r2Cx) / 2 - 55} y="65" width="110" height="40" rx="4" fill="white" stroke="#cbd5e1" />
+            <text x={(360 + r2Cx) / 2} y="80" textAnchor="middle" className="text-xs font-bold fill-slate-600">前通背腔管</text>
+            <text x={(360 + r2Cx) / 2} y="95" textAnchor="middle" className="text-[10px] font-semibold fill-slate-500">(Tube+MESH)</text>
+          </>
+        )}
+
+        {/* Rear1 to Rear2 */}
+        {hasIndRear && (
+          <>
+            <line x1="360" y1="270" x2={r2X - 2} y2="270" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrow)" />
+            <rect x="375" y="250" width="90" height="40" rx="4" fill="white" stroke="#cbd5e1" />
+            <text x="420" y="265" textAnchor="middle" className="text-xs font-bold fill-slate-600">後洩孔</text>
+            <text x="420" y="280" textAnchor="middle" className="text-[10px] font-semibold fill-slate-500">(MESH)</text>
+            
+            <line x1="360" y1="320" x2={r2X - 2} y2="320" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrow)" />
+            <rect x="375" y="300" width="90" height="40" rx="4" fill="white" stroke="#cbd5e1" />
+            <text x="420" y="315" textAnchor="middle" className="text-xs font-bold fill-slate-600">後調音管</text>
+            <text x="420" y="330" textAnchor="middle" className="text-[10px] font-semibold fill-slate-500">(Tube)</text>
+          </>
+        )}
+
+        {/* Front to Rear (TYPE_E specific) */}
+        {!hasIndRear && (
+          <>
+            <line x1="290" y1="130" x2="290" y2="190" stroke="#64748b" strokeWidth="2" />
+            <line x1="290" y1="190" x2={r2Cx} y2="190" stroke="#64748b" strokeWidth="2" />
+            <line x1={r2Cx} y1="190" x2={r2Cx} y2="248" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrow)" />
+            <rect x={(290 + r2Cx) / 2 - 55} y="170" width="110" height="40" rx="4" fill="white" stroke="#cbd5e1" />
+            <text x={(290 + r2Cx) / 2} y="185" textAnchor="middle" className="text-xs font-bold fill-slate-600">前通背腔孔</text>
+            <text x={(290 + r2Cx) / 2} y="200" textAnchor="middle" className="text-[10px] font-semibold fill-slate-500">(MESH)</text>
+          </>
+        )}
+
+        {/* Rear2 to Open Air */}
+        {hasBackLeak && (
+          <>
+            <path d={`M ${r2X + 140} 295 L 795 295 L 795 232`} stroke="#94a3b8" strokeWidth="2" fill="none" strokeDasharray="4 4" markerEnd="url(#arrow-dashed)" />
+            <rect x="645" y="275" width="110" height="40" rx="4" fill="white" stroke="#cbd5e1" />
+            <text x="700" y="290" textAnchor="middle" className="text-xs font-bold fill-slate-600">背腔洩漏孔</text>
+            <text x="700" y="305" textAnchor="middle" className="text-[10px] font-semibold fill-slate-500">(MESH)</text>
+          </>
+        )}
+
+      </svg>
+    </div>
+  );
+};
+
 const CircuitDiagramSVG = ({ type }) => {
-  const base = import.meta.env.BASE_URL;
-  const stackImages = {
-    'TYPE_A': `${base}images/type_a.png`,
-    'TYPE_C': `${base}images/type_c.png`,
-    'TYPE_E': `${base}images/type_e.png`,
-    'CUSTOM_CIRCUIT': `${base}images/type_a.png`
-  };
   const hasIndRear = type === 'TYPE_A' || type === 'TYPE_C' || type === 'CUSTOM_CIRCUIT';
   const hasBackLeak = type === 'TYPE_A' || type === 'TYPE_E' || type === 'CUSTOM_CIRCUIT';
 
@@ -305,14 +413,7 @@ const CircuitDiagramSVG = ({ type }) => {
         <Layers size={12} className="mr-2 text-blue-500" />
         ACOUSTIC ARCHITECTURE: <span className="text-slate-700 ml-1">{type.replace('_', ' ')}</span>
       </div>
-      <div className="w-full max-w-[600px] h-[340px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-hidden shrink-0 border border-slate-200">
-        <img 
-          src={stackImages[type] || `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Image+Missing)`} 
-          alt={`Mechanical Stack for ${type}`} 
-          className="w-full h-full object-contain p-2" 
-          onError={(e) => { e.target.src = `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Please+insert+PPT+image)`; }}
-        />
-      </div>
+      <AcousticBlockDiagram type={type} hasIndRear={hasIndRear} hasBackLeak={hasBackLeak} />
       <div className="w-full max-w-[600px] h-[320px] relative shrink-0">
         <svg viewBox="0 0 500 300" className="w-full h-full drop-shadow-sm">
           <defs><marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4"><circle cx="5" cy="5" r="5" fill="#64748b" /></marker></defs>
