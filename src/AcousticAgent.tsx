@@ -300,20 +300,20 @@ const CircuitDiagramSVG = ({ type }) => {
   const hasBackLeak = type === 'TYPE_A' || type === 'TYPE_E' || type === 'CUSTOM_CIRCUIT';
 
   return (
-    <div className="w-full h-full bg-[#f8fafc] rounded-2xl border border-slate-200 p-4 relative flex flex-col lg:flex-row gap-4 items-center justify-center overflow-hidden">
+    <div className="w-full h-full bg-[#f8fafc] rounded-2xl border border-slate-200 p-4 relative flex flex-col gap-6 items-center justify-start overflow-y-auto pt-16">
       <div className="absolute top-4 left-6 text-[10px] font-bold text-slate-400 tracking-widest flex items-center bg-white px-3 py-1 rounded-full shadow-sm z-20 border border-slate-100">
         <Layers size={12} className="mr-2 text-blue-500" />
         ACOUSTIC ARCHITECTURE: <span className="text-slate-700 ml-1">{type.replace('_', ' ')}</span>
       </div>
-      <div className="w-full lg:w-[260px] h-[340px] relative mt-8 lg:mt-0 rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-hidden shrink-0 border border-slate-200">
+      <div className="w-full max-w-[600px] h-[340px] relative rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center overflow-hidden shrink-0 border border-slate-200">
         <img 
-          src={stackImages[type] || `https://placehold.co/260x340/f8fafc/475569?text=${type}\\n(Image+Missing)`} 
+          src={stackImages[type] || `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Image+Missing)`} 
           alt={`Mechanical Stack for ${type}`} 
           className="w-full h-full object-contain p-2" 
-          onError={(e) => { e.target.src = `https://placehold.co/260x340/f8fafc/475569?text=${type}\\n(Please+insert+PPT+image)`; }}
+          onError={(e) => { e.target.src = `https://placehold.co/600x340/f8fafc/475569?text=${type}\\n(Please+insert+PPT+image)`; }}
         />
       </div>
-      <div className="flex-1 w-full h-[320px] relative">
+      <div className="w-full max-w-[600px] h-[320px] relative shrink-0">
         <svg viewBox="0 0 500 300" className="w-full h-full drop-shadow-sm">
           <defs><marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4"><circle cx="5" cy="5" r="5" fill="#64748b" /></marker></defs>
           <line x1="40" y1="260" x2="460" y2="260" stroke="#94a3b8" strokeWidth="3" />
